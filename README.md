@@ -814,25 +814,3 @@
         </div>
     </div>
 
-    <div id="website-popup" class="popup">
-        <div class="popup-content">
-            <span class="close-popup">✕</span>
-            <div style="padding: 3rem;">
-                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Website Development</h3>
-                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Professional responsive websites built with cutting-edge technologies. Perfect for businesses, portfolios, and startups looking to establish their digital presence.</p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
-                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="webapp-popup" class="popup">
-        <div class="popup-content">
-            <span class="close-popup">✕</span>
-            <div style="padding: 3rem;">
-                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Web Application Research</h3>
-                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Advanced full-stack web applications with modern frameworks like React, Vue, and Node.js. Scalable architecture designed for growth and performance.</p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
