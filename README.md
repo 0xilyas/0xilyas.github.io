@@ -808,9 +808,4 @@
         createBackendAnimation();
     </script>
 </body>
-</html><a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
+</html>
