@@ -1,76 +1,63 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HE8ST | Elite Software Development & Cybersecurity</title>
+    <title>HE8ST | Advanced Digital Research Laboratory</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #00D4FF;
-            --primary-gold: #FFB800;
-            --dark-purple: #0A0A1E;
-            --medium-purple: #1A1A3E;
-            --light-purple: #2A2A5E;
-            --cyber-green: #00FF9F;
-            --text-light: #E0E6ED;
-            --text-dim: #8892B0;
+            --deep-purple: #0A0015;
+            --dark-purple: #1A0F2E;
+            --medium-purple: #2D1B4E;
+            --accent-purple: #4A2B7C;
+            --bright-purple: #7C3AED;
+            --cyber-blue: #00D4FF;
+            --neon-green: #00FF9F;
+            --text-primary: #E0E6ED;
+            --text-secondary: #A0A8B5;
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-light);
-            background: linear-gradient(135deg, var(--dark-purple) 0%, #000011 50%, var(--medium-purple) 100%);
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            background: var(--deep-purple);
             overflow-x: hidden;
         }
 
-        body.light {
-            --primary-blue: #0066CC;
-            --primary-gold: #FF8C00;
-            --dark-purple: #F8FAFC;
-            --medium-purple: #E2E8F0;
-            --light-purple: #CBD5E1;
-            --cyber-green: #059669;
-            --text-light: #0F172A;
-            --text-dim: #475569;
-            background: linear-gradient(135deg, #F1F5F9 0%, #FFFFFF 50%, #E2E8F0 100%);
-        }
-
-        /* Enhanced 3D Background Canvas */
-        #background-canvas {
+        #cursor-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* Mobile-First Navigation */
         nav {
-            background: rgba(10, 10, 30, 0.9);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 0, 21, 0.85);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+            z-index: 1000;
             transition: all 0.3s ease;
         }
 
-        body.light nav {
-            background: rgba(248, 250, 252, 0.95);
-            border-bottom: 1px solid rgba(0, 102, 204, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 102, 204, 0.1);
-        }
-
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,13 +65,13 @@
         }
 
         .nav-logo {
-            font-family: 'Space Grotesk', monospace;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 1.5rem;
             font-weight: 900;
-            background: linear-gradient(135deg, var(--primary-blue), var(--cyber-green));
+            background: linear-gradient(135deg, var(--bright-purple), var(--cyber-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: 0.1em;
         }
 
         .nav-links {
@@ -94,216 +81,91 @@
         }
 
         .nav-btn {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            color: var(--text-primary);
             text-decoration: none;
-            color: var(--text-light);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .nav-btn::before {
+        .nav-btn::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--bright-purple);
+            transition: width 0.3s ease;
+        }
+
+        .nav-btn:hover::after {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
-            transition: left 0.5s;
         }
 
-        .nav-btn:hover::before {
-            left: 100%;
-        }
-
-        .nav-btn:hover {
-            color: var(--primary-blue);
-            transform: translateY(-2px) scale(1.05);
-            text-shadow: 0 0 20px var(--primary-blue);
-        }
-
-        /* Mobile Menu */
         .mobile-menu-btn {
             display: none;
             flex-direction: column;
             cursor: pointer;
             background: none;
             border: none;
-            padding: 0.5rem;
         }
 
         .mobile-menu-btn span {
             width: 25px;
-            height: 3px;
-            background: var(--text-light);
+            height: 2px;
+            background: var(--text-primary);
             margin: 3px 0;
             transition: 0.3s;
-            border-radius: 2px;
         }
 
-        .mobile-menu-btn.active span:nth-child(1) {
-            transform: rotate(-45deg) translate(-5px, 6px);
-        }
-
-        .mobile-menu-btn.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .mobile-menu-btn.active span:nth-child(3) {
-            transform: rotate(45deg) translate(-5px, -6px);
-        }
-
-        .mobile-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(10, 10, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0, 212, 255, 0.1);
-            transform: translateY(-100%);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 50;
-        }
-
-        body.light .mobile-menu {
-            background: rgba(248, 250, 252, 0.95);
-            border-top: 1px solid rgba(0, 102, 204, 0.1);
-        }
-
-        .mobile-menu.active {
-            transform: translateY(0);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-menu-links {
+        section {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 2rem;
-            gap: 1.5rem;
-        }
-
-        /* Enhanced HE8ST Logo */
-        .logo-container {
+            justify-content: center;
+            align-items: center;
+            padding: 6rem 2rem 4rem;
             position: relative;
-            perspective: 1000px;
-            margin-bottom: 2rem;
         }
 
-        .he8st-logo {
-            font-family: 'Space Grotesk', monospace;
-            font-size: clamp(3rem, 15vw, 8rem);
+        .hero-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(4rem, 12vw, 9rem);
             font-weight: 900;
-            background: linear-gradient(135deg, var(--primary-blue), var(--cyber-green), var(--primary-gold));
+            background: linear-gradient(135deg, var(--bright-purple), var(--cyber-blue), var(--neon-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-align: center;
             letter-spacing: 0.1em;
+            margin-bottom: 1rem;
             position: relative;
-            animation: logoFloat 6s ease-in-out infinite, logoGlow 4s ease-in-out infinite alternate;
-            line-height: 1.1;
+            animation: float 6s ease-in-out infinite;
         }
 
-        .he8st-logo::before {
-            content: 'HE8ST';
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            background: linear-gradient(135deg, var(--primary-blue), var(--cyber-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: blur(10px);
-            opacity: 0.5;
-            animation: pulse 3s ease-in-out infinite;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        .he8st-logo::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%;
-            height: 120%;
-            background: conic-gradient(from 0deg, var(--primary-blue), var(--cyber-green), var(--primary-gold), var(--primary-blue));
-            border-radius: 20px;
-            z-index: -2;
-            opacity: 0.1;
-            animation: rotate 20s linear infinite;
+        .lab-subtitle {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
         }
 
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px) rotateX(0deg); }
-            50% { transform: translateY(-20px) rotateX(5deg); }
-        }
-
-        @keyframes logoGlow {
-            0% { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)); }
-            100% { filter: drop-shadow(0 0 40px rgba(0, 255, 159, 0.8)); }
-        }
-
-        @keyframes rotate {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Enhanced Cards with Morphism */
-        .morphic-card {
-            background: rgba(26, 26, 62, 0.4);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 20px;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        body.light .morphic-card {
-            background: rgba(248, 250, 252, 0.6);
-            border: 1px solid rgba(0, 102, 204, 0.2);
-        }
-
-        .morphic-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .morphic-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 212, 255, 0.2), 0 0 0 1px rgba(0, 212, 255, 0.1);
-            border-color: var(--primary-blue);
-        }
-
-        .morphic-card:hover::before {
-            height: 3px;
-            box-shadow: 0 0 20px var(--primary-blue);
-        }
-
-        /* Offer Section Enhancement */
         .offer-card {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 159, 0.1));
-            border: 2px solid;
-            border-image: linear-gradient(135deg, var(--primary-blue), var(--cyber-green)) 1;
+            background: linear-gradient(135deg, rgba(74, 43, 124, 0.3), rgba(45, 27, 78, 0.3));
+            border: 2px solid var(--bright-purple);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 700px;
+            width: 100%;
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            transition: all 0.4s ease;
         }
 
         .offer-card::before {
@@ -313,42 +175,38 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: conic-gradient(transparent, rgba(0, 212, 255, 0.1), transparent, rgba(0, 255, 159, 0.1), transparent);
-            animation: rotate 10s linear infinite;
-            z-index: -1;
+            background: conic-gradient(transparent, rgba(124, 58, 237, 0.3), transparent 30%);
+            animation: rotate 6s linear infinite;
         }
 
-        .offer-price {
-            font-size: clamp(2rem, 8vw, 3.5rem);
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary-gold), var(--primary-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: textShine 3s ease-in-out infinite;
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        @keyframes textShine {
-            0%, 100% { background-position: -200% center; }
-            50% { background-position: 200% center; }
+        .offer-content {
+            position: relative;
+            z-index: 1;
         }
 
-        /* Service Cards Grid - Mobile Optimized */
-        .services-grid {
+        .service-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
             max-width: 1400px;
             width: 100%;
-            padding: 0 1rem;
+            margin-top: 3rem;
         }
 
         .service-card {
+            background: rgba(45, 27, 78, 0.4);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
-            cursor: pointer;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            min-height: 200px;
         }
 
         .service-card::after {
@@ -358,19 +216,49 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.2), transparent);
+            transition: left 0.5s ease;
         }
 
         .service-card:hover::after {
             left: 100%;
         }
 
-        .service-card:active {
-            transform: scale(0.98);
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--bright-purple);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
         }
 
-        /* Enhanced Popups - Mobile Optimized */
+        .service-animation {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--bright-purple), var(--cyber-blue));
+            border: none;
+            border-radius: 50px;
+            padding: 1.2rem 3rem;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.6);
+        }
+
         .popup {
             display: none;
             position: fixed;
@@ -378,11 +266,15 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(10px);
-            padding: 1rem;
-            animation: popupSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .popup-content {
@@ -390,1020 +282,558 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(26, 26, 62, 0.95);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 212, 255, 0.1);
-            max-width: 90%;
-            width: 500px;
-            max-height: 80vh;
+            background: linear-gradient(135deg, var(--dark-purple), var(--medium-purple));
+            border: 2px solid var(--bright-purple);
+            border-radius: 25px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
             overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(124, 58, 237, 0.5);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        body.light .popup-content {
-            background: rgba(248, 250, 252, 0.95);
-            border: 1px solid rgba(0, 102, 204, 0.3);
-        }
-
-        @keyframes popupSlide {
-            0% {
+        @keyframes slideUp {
+            from {
                 opacity: 0;
-                transform: scale(0.8);
+                transform: translate(-50%, -40%);
             }
-            100% {
+            to {
                 opacity: 1;
-                transform: scale(1);
+                transform: translate(-50%, -50%);
             }
         }
 
         .close-popup {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 10;
+            top: 1.5rem;
+            right: 1.5rem;
             width: 40px;
             height: 40px;
+            border-radius: 50%;
+            background: rgba(124, 58, 237, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 1.5rem;
+            z-index: 10;
         }
 
         .close-popup:hover {
             background: rgba(255, 0, 0, 0.5);
-            transform: scale(1.1);
+            transform: rotate(90deg);
         }
 
-        /* Enhanced Buttons - Mobile Optimized */
-        .cta-button {
-            background: linear-gradient(135deg, var(--primary-blue), var(--cyber-green));
-            border: none;
-            border-radius: 50px;
-            padding: 1rem 2rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
-            min-height: 50px;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s;
-        }
-
-        .cta-button:hover::before {
-            left: 100%;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
-        }
-
-        .cta-button:active {
-            transform: translateY(-1px) scale(1.02);
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        section {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem 1rem;
-            position: relative;
-        }
-
-        /* Loading animation for Three.js */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        footer {
             background: var(--dark-purple);
-            z-index: 9999;
+            border-top: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(124, 58, 237, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1s ease-out;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--text-primary);
         }
 
-        .loading-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
+        .social-icon:hover {
+            background: var(--bright-purple);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.5);
         }
 
-        /* Mobile Responsive Breakpoints */
         @media (max-width: 768px) {
-            /* Navigation */
-            .nav-links {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: flex;
-            }
-
-            /* Hero Section */
-            .he8st-logo {
-                font-size: clamp(2.5rem, 12vw, 4rem);
-                letter-spacing: 0.05em;
-            }
-
-            /* Services Grid */
-            .services-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                padding: 0 0.5rem;
-            }
-
-            .service-card {
-                min-height: 160px;
-            }
-
-            /* Offer Card */
-            .offer-card {
-                margin: 0 0.5rem 2rem;
-            }
-
-            .offer-price {
-                font-size: clamp(1.8rem, 10vw, 2.5rem);
-            }
-
-            /* Popups */
-            .popup {
-                padding: 0.5rem;
-            }
-
-            .popup-content {
-                width: 95%;
-                max-height: 90vh;
-            }
-
-            /* Sections */
-            section {
-                padding: 1rem 0.5rem;
-                min-height: auto;
-            }
-
-            /* Text sizing */
-            h2 {
-                font-size: clamp(2rem, 8vw, 4rem) !important;
-            }
-
-            .text-2xl {
-                font-size: 1.25rem !important;
-            }
-
-            .text-xl {
-                font-size: 1.1rem !important;
-            }
-
-            .text-lg {
-                font-size: 1rem !important;
-            }
-
-            /* CTA Button */
-            .cta-button {
-                width: 100%;
-                max-width: 280px;
-                padding: 1.2rem 2rem;
-            }
-
-            /* Navigation height adjustment */
-            .nav-container {
-                height: 60px;
-            }
-
-            /* Background canvas optimization */
-            #background-canvas {
-                transform: scale(0.8);
-                opacity: 0.6;
-            }
-        }
-
-        @media (max-width: 480px) {
-            /* Extra small screens */
-            section {
-                padding: 1rem 0.25rem;
-            }
-
-            .morphic-card {
-                margin: 0 0.25rem;
-            }
-
-            .he8st-logo {
-                font-size: clamp(2rem, 15vw, 3rem);
-            }
-
-            .offer-price {
-                font-size: clamp(1.5rem, 12vw, 2rem);
-            }
-
-            h2 {
-                font-size: clamp(1.5rem, 10vw, 3rem) !important;
-            }
-
-            .popup-content {
-                border-radius: 15px;
-            }
-
-            /* Reduce Three.js complexity on very small screens */
-            #background-canvas {
-                transform: scale(0.6);
-                opacity: 0.4;
-            }
-        }
-
-        /* Tablet optimizations */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
-            }
-
-            .he8st-logo {
-                font-size: clamp(4rem, 10vw, 6rem);
-            }
-
-            section {
-                padding: 3rem 2rem;
-            }
-        }
-
-        /* Large screen optimizations */
-        @media (min-width: 1200px) {
-            .services-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 2rem;
-            }
-
-            .nav-container {
-                padding: 0 2rem;
-            }
-        }
-
-        /* Touch device optimizations */
-        @media (hover: none) and (pointer: coarse) {
-            .morphic-card:hover {
-                transform: none;
-                box-shadow: 0 15px 30px rgba(0, 212, 255, 0.15);
-            }
-
-            .service-card:hover::after {
-                left: 0;
-                opacity: 0.1;
-            }
-
-            .cta-button:hover {
-                transform: none;
-            }
-
-            .nav-btn:hover {
-                transform: none;
-                text-shadow: none;
-            }
-        }
-
-        /* High DPI screen optimizations */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .he8st-logo {
-                text-rendering: optimizeLegibility;
-            }
-        }
-
-        /* Landscape phone optimizations */
-        @media screen and (max-height: 500px) and (orientation: landscape) {
-            section {
-                min-height: auto;
-                padding: 2rem 1rem;
-            }
-
-            .he8st-logo {
-                font-size: clamp(2rem, 8vw, 3rem);
-            }
-        }
-
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-
-            .he8st-logo::before,
-            .he8st-logo::after {
-                animation: none;
-            }
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: flex; }
+            section { padding: 5rem 1rem 3rem; }
+            .service-grid { grid-template-columns: 1fr; }
+            .offer-card { padding: 2rem; }
         }
     </style>
 </head>
-<body class="dark">
-    <div class="loading-overlay" id="loading">
-        <div class="he8st-logo" style="font-size: 2rem;">HE8ST</div>
-    </div>
-    
-    <canvas id="background-canvas"></canvas>
-    
-    <nav class="fixed top-0 w-full z-50">
+<body>
+    <canvas id="cursor-canvas"></canvas>
+
+    <nav>
         <div class="nav-container">
             <div class="nav-logo">HE8ST</div>
-            
             <div class="nav-links">
-                <a href="#home" class="nav-btn text-lg font-semibold px-4 py-2">Home</a>
-                <a href="#services" class="nav-btn text-lg font-semibold px-4 py-2">Services</a>
-                <a href="#contact" class="nav-btn text-lg font-semibold px-4 py-2">Contact</a>
-                <button id="theme-toggle" class="nav-btn text-lg font-semibold px-4 py-2">🌙</button>
+                <a href="#home" class="nav-btn">Home</a>
+                <a href="#research" class="nav-btn">Research</a>
+                <a href="#contact" class="nav-btn">Contact</a>
             </div>
-
-            <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <button class="mobile-menu-btn">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
         </div>
-
-        <div class="mobile-menu" id="mobile-menu">
-            <div class="mobile-menu-links">
-                <a href="#home" class="nav-btn text-lg font-semibold">Home</a>
-                <a href="#services" class="nav-btn text-lg font-semibold">Services</a>
-                <a href="#contact" class="nav-btn text-lg font-semibold">Contact</a>
-                <button id="mobile-theme-toggle" class="nav-btn text-lg font-semibold text-left">🌙 Toggle Theme</button>
-            </div>
-        </div>
     </nav>
 
     <section id="home">
-        <div class="logo-container">
-            <h1 class="he8st-logo">HE8ST</h1>
-        </div>
+        <h1 class="hero-logo">HE8ST</h1>
+        <p class="lab-subtitle">Advanced Digital Research Laboratory</p>
         
-        <div class="morphic-card offer-card p-6 sm:p-8 mb-8 sm:mb-12 cursor-pointer max-w-2xl w-full mx-4" id="offer-section">
-            <div class="offer-price mb-4 text-center">$50 Landing Page</div>
-            <p class="text-lg sm:text-xl font-medium text-center mb-4">Premium Animated Designs That Convert</p>
-            <p class="text-base sm:text-lg opacity-80 text-center">Delivered in 48 hours • 3D Animations • SEO Optimized</p>
+        <div class="offer-card" id="offer-card">
+            <div class="offer-content">
+                <h3 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem; background: linear-gradient(135deg, var(--cyber-blue), var(--neon-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$350 Basic Website Build</h3>
+                <p style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-secondary);">Complete Responsive Web Solutions</p>
+                <p style="color: var(--text-secondary);">Full-stack development • Modern animations • 48-hour delivery • SEO optimized</p>
+            </div>
         </div>
-        
-        <p class="text-lg sm:text-2xl max-w-3xl mb-8 sm:mb-12 font-medium text-center leading-relaxed opacity-90 px-4">
-            Elite Software Development & Cybersecurity Solutions for Tomorrow's Digital Landscape
+
+        <p style="max-width: 800px; text-align: center; margin: 3rem 0; font-size: 1.25rem; line-height: 1.8; color: var(--text-secondary);">
+            Where cutting-edge research meets practical innovation. We develop advanced digital solutions through rigorous experimentation and breakthrough technologies.
         </p>
-        
-        <a href="#services" class="cta-button text-white font-semibold text-lg">
-            Explore Services
+
+        <a href="#research" class="cta-button">
+            Explore Research Areas
             <span>→</span>
         </a>
-        
-        <div id="offer-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">$50 Premium Landing Page</h3>
-                    <div class="space-y-4 mb-8 text-base sm:text-lg">
-                        <p>✨ Modern responsive design with 3D animations</p>
-                        <p>🚀 SEO-optimized for maximum visibility</p>
-                        <p>⚡ Perfect for startups and crypto projects</p>
-                        <p>🎯 Conversion-focused user experience</p>
-                        <p>📱 Mobile-first approach</p>
-                    </div>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
-                        </svg>
-                        Contact on Telegram
-                    </a>
-                </div>
-            </div>
-        </div>
     </section>
 
-    <section id="services">
-        <h2 class="text-4xl sm:text-6xl font-bold mb-4 text-center" style="color: var(--primary-blue)">Services</h2>
-        <p class="text-lg sm:text-xl opacity-75 text-center mb-12 sm:mb-16 max-w-2xl px-4">Cutting-edge solutions powered by the latest technologies</p>
-        
-        <div class="services-grid">
-            <div class="service-card morphic-card p-6 sm:p-8" data-popup="landing-popup">
-                <h3 class="text-xl sm:text-2xl font-bold mb-4" style="color: var(--primary-gold)">Landing Page Design</h3>
-                <p class="text-base sm:text-lg opacity-90 mb-4">Premium responsive pages with 3D animations</p>
-                <div class="text-2xl sm:text-3xl font-bold" style="color: var(--primary-blue)">$50</div>
-            </div>
-            
-            <div class="service-card morphic-card p-6 sm:p-8" data-popup="webapp-popup">
-                <h3 class="text-xl sm:text-2xl font-bold mb-4" style="color: var(--primary-gold)">Web App Development</h3>
-                <p class="text-base sm:text-lg opacity-90 mb-4">Custom applications with modern frameworks</p>
-                <div class="text-sm opacity-75">From $500</div>
-            </div>
-            
-            <div class="service-card morphic-card p-6 sm:p-8" data-popup="crypto-popup">
-                <h3 class="text-xl sm:text-2xl font-bold mb-4" style="color: var(--primary-gold)">Web3 DApp Development</h3>
-                <p class="text-base sm:text-lg opacity-90 mb-4">Solana DApps and smart contracts</p>
-                <div class="text-sm opacity-75">From $1000</div>
-            </div>
-            
-            <div class="service-card morphic-card p-6 sm:p-8" data-popup="scripting-popup">
-                <h3 class="text-xl sm:text-2xl font-bold mb-4" style="color: var(--primary-gold)">Automation Scripts</h3>
-                <p class="text-base sm:text-lg opacity-90 mb-4">Python/Flask efficiency solutions</p>
-                <div class="text-sm opacity-75">From $100</div>
-            </div>
-            
-            <div class="service-card morphic-card p-6 sm:p-8" data-popup="mobile-popup">
-                <h3 class="text-xl sm:text-2xl font-bold mb-4" style="color: var(--primary-gold)">Mobile Apps</h3>
-                <p class="text-base sm:text-lg opacity-90 mb-4">Cross-platform iOS and Android</p>
-                <div class="text-sm opacity-75">From $800</div>
-            </div>
-            
-            <div class="service-card morphic-card p-6 sm:p-8" data-popup="backend-popup">
-                <h3 class="text-xl sm:text-2xl font-bold mb-4" style="color: var(--primary-gold)">Backend Systems</h3>
-                <p class="text-base sm:text-lg opacity-90 mb-4">Scalable APIs and server solutions</p>
-                <div class="text-sm opacity-75">From $600</div>
-            </div>
-        </div>
+    <section id="research">
+        <h2 style="font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; margin-bottom: 1rem; background: linear-gradient(135deg, var(--bright-purple), var(--cyber-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Research Areas</h2>
+        <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 3rem;">Experimental projects and practical implementations</p>
 
-        <!-- Service Popups -->
-        <div id="landing-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">Landing Page Design</h3>
-                    <p class="text-base sm:text-lg mb-6">Professional responsive landing pages with modern 3D animations, optimized for conversions and SEO.</p>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">Contact on Telegram</a>
-                </div>
+        <div class="service-grid">
+            <div class="service-card" data-popup="website-popup">
+                <div class="service-animation" id="anim-website"></div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Website Development</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Complete responsive web solutions with modern frameworks and animations</p>
+                <div style="font-size: 1.75rem; font-weight: 900; color: var(--cyber-blue);">$350</div>
             </div>
-        </div>
-        
-        <div id="webapp-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">Web App Development</h3>
-                    <p class="text-base sm:text-lg mb-6">Custom web applications built with React, Vue, or vanilla JS for optimal performance and user experience.</p>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">Contact on Telegram</a>
-                </div>
+
+            <div class="service-card" data-popup="webapp-popup">
+                <div class="service-animation" id="anim-webapp"></div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Web Application Research</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Advanced full-stack applications with scalable architecture</p>
+                <div style="color: var(--text-secondary);">From $3500</div>
             </div>
-        </div>
-        
-        <div id="crypto-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">Web3 DApp Development</h3>
-                    <p class="text-base sm:text-lg mb-6">Cutting-edge Solana-based DApps, smart contracts, and trading systems for blockchain innovators.</p>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">Contact on Telegram</a>
-                </div>
+
+            <div class="service-card" data-popup="web3-popup">
+                <div class="service-animation" id="anim-web3"></div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Web3 & Blockchain Lab</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Decentralized applications and smart contract development</p>
+                <div style="color: var(--text-secondary);">From $1000</div>
             </div>
-        </div>
-        
-        <div id="scripting-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">Automation Scripts</h3>
-                    <p class="text-base sm:text-lg mb-6">Efficient Python and Flask scripts to automate workflows and boost productivity across your business.</p>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">Contact on Telegram</a>
-                </div>
+
+            <div class="service-card" data-popup="automation-popup">
+                <div class="service-animation" id="anim-automation"></div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Automation Systems</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Intelligent workflow automation and optimization</p>
+                <div style="color: var(--text-secondary);">From $100</div>
             </div>
-        </div>
-        
-        <div id="mobile-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">Mobile App Development</h3>
-                    <p class="text-base sm:text-lg mb-6">Native and cross-platform mobile applications for iOS and Android with seamless user experiences.</p>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">Contact on Telegram</a>
-                </div>
+
+            <div class="service-card" data-popup="mobile-popup">
+                <div class="service-animation" id="anim-mobile"></div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Mobile Platforms</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Cross-platform mobile solutions for iOS and Android</p>
+                <div style="color: var(--text-secondary);">From $800</div>
             </div>
-        </div>
-        
-        <div id="backend-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup">✕</span>
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-6" style="color: var(--primary-blue)">Backend Development</h3>
-                    <p class="text-base sm:text-lg mb-6">Robust, scalable backend systems with secure APIs and high-performance server architecture.</p>
-                    <a href="https://t.me/HE8ST" class="cta-button text-white w-full">Contact on Telegram</a>
-                </div>
+
+            <div class="service-card" data-popup="backend-popup">
+                <div class="service-animation" id="anim-backend"></div>
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">Backend Infrastructure</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Robust server architecture and API development</p>
+                <div style="color: var(--text-secondary);">From $600</div>
             </div>
         </div>
     </section>
 
     <section id="contact">
-        <h2 class="text-4xl sm:text-6xl font-bold mb-8 text-center" style="color: var(--primary-blue)">Get Started</h2>
-        <p class="text-lg sm:text-2xl text-center mb-8 sm:mb-12 max-w-3xl font-medium opacity-90 px-4">
-            Ready to transform your digital presence with cutting-edge technology?
+        <h2 style="font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; margin-bottom: 2rem; background: linear-gradient(135deg, var(--bright-purple), var(--cyber-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Initiate Contact</h2>
+        <p style="font-size: 1.5rem; text-align: center; margin-bottom: 3rem; max-width: 700px; color: var(--text-secondary);">
+            Ready to collaborate on groundbreaking digital projects?
         </p>
-        <a href="https://t.me/HE8ST" class="cta-button text-white text-lg sm:text-xl px-8 sm:px-12 py-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
-            </svg>
-            Start Your Project
-        </a>
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center;">
+            <a href="https://t.me/HE8ST" class="cta-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                </svg>
+                Telegram
+            </a>
+            <a href="https://x.com/0xhe8st" class="cta-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                X (Twitter)
+            </a>
+        </div>
     </section>
 
+    <footer>
+        <div class="social-links">
+            <a href="https://x.com/0xhe8st" class="social-icon" target="_blank">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            <a href="https://instagram.com" class="social-icon" target="_blank">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+            </a>
+            <a href="https://youtube.com" class="social-icon" target="_blank">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+            </a>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">© 2025 HE8ST. All rights reserved.</p>
+    </footer>
+
+    <!-- Popups -->
+    <div id="offer-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--bright-purple), var(--cyber-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$350 Basic Website Build</h3>
+                <div style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">
+                    <p style="margin-bottom: 1rem;">✨ Complete responsive website development</p>
+                    <p style="margin-bottom: 1rem;">🎨 Modern design with smooth animations</p>
+                    <p style="margin-bottom: 1rem;">⚡ Lightning-fast performance optimization</p>
+                    <p style="margin-bottom: 1rem;">📱 Mobile-first responsive design</p>
+                    <p style="margin-bottom: 1rem;">🔍 SEO-optimized structure</p>
+                    <p style="margin-bottom: 1rem;">⏱️ 48-hour delivery guarantee</p>
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
+                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="web3-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Web3 & Blockchain Lab</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Cutting-edge decentralized applications on Solana and other blockchains. Smart contract development, DeFi protocols, and NFT platforms built with security and efficiency in mind.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
+                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="automation-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Automation Systems</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Intelligent Python and Flask automation scripts to streamline workflows, boost productivity, and eliminate repetitive tasks across your operations.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
+                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mobile-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Mobile Platforms</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Native and cross-platform mobile applications for iOS and Android. Built with React Native and Flutter for seamless performance and user experience.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
+                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="backend-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Backend Infrastructure</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Robust, scalable backend systems with secure REST and GraphQL APIs. High-performance server architecture built for reliability and growth.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
+                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Enhanced Three.js Background with Mobile Optimizations
-        let bgScene, bgCamera, bgRenderer, shapes = [], particles, helix, grid;
+        // Interactive cursor background
+        const canvas = document.getElementById('cursor-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
         let isMobile = window.innerWidth <= 768;
-        let isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        function initBackground() {
-            bgScene = new THREE.Scene();
-            bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            bgRenderer = new THREE.WebGLRenderer({ 
-                canvas: document.getElementById('background-canvas'), 
-                alpha: true,
-                antialias: !isMobile,
-                powerPreference: isMobile ? 'low-power' : 'high-performance'
-            });
-            bgRenderer.setSize(window.innerWidth, window.innerHeight);
-            bgRenderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-            // Animated Grid (simplified for mobile)
-            const gridGeometry = new THREE.PlaneGeometry(50, 50, isMobile ? 20 : 100, isMobile ? 20 : 100);
-            const gridMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    time: { value: 0 },
-                    color1: { value: new THREE.Color(0x00D4FF) },
-                    color2: { value: new THREE.Color(0x00FF9F) }
-                },
-                vertexShader: `
-                    uniform float time;
-                    varying vec2 vUv;
-                    varying vec3 vPosition;
-                    void main() {
-                        vUv = uv;
-                        vec3 pos = position;
-                        pos.z += sin(pos.x * 0.5 + time) * cos(pos.y * 0.5 + time) * ${isMobile ? '1.0' : '2.0'};
-                        vPosition = pos;
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-                    }
-                `,
-                fragmentShader: `
-                    uniform float time;
-                    uniform vec3 color1;
-                    uniform vec3 color2;
-                    varying vec2 vUv;
-                    varying vec3 vPosition;
-                    void main() {
-                        float wave = sin(vUv.x * ${isMobile ? '10.0' : '20.0'} + time) * cos(vUv.y * ${isMobile ? '10.0' : '20.0'} + time * 0.5);
-                        vec3 color = mix(color1, color2, wave * 0.5 + 0.5);
-                        float alpha = ${isMobile ? '0.2' : '0.3'} + wave * 0.2;
-                        gl_FragColor = vec4(color, alpha);
-                    }
-                `,
-                wireframe: true,
-                transparent: true
-            });
-            grid = new THREE.Mesh(gridGeometry, gridMaterial);
-            grid.rotation.x = -Math.PI / 2;
-            bgScene.add(grid);
-
-            // Floating Geometric Shapes (reduced for mobile)
-            const shapeCount = isMobile ? 20 : 50;
-            const shapeGeometries = [
-                new THREE.BoxGeometry(1, 1, 1),
-                new THREE.SphereGeometry(0.5, isMobile ? 8 : 16, isMobile ? 8 : 16),
-                new THREE.ConeGeometry(0.5, 1, isMobile ? 4 : 8),
-                new THREE.OctahedronGeometry(0.6),
-            ];
-
-            for (let i = 0; i < shapeCount; i++) {
-                const geometry = shapeGeometries[Math.floor(Math.random() * shapeGeometries.length)];
-                const material = new THREE.MeshBasicMaterial({
-                    color: Math.random() > 0.5 ? 0x00D4FF : 0x00FF9F,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: isMobile ? 0.2 : 0.3
-                });
-                const shape = new THREE.Mesh(geometry, material);
-                
-                shape.position.set(
-                    (Math.random() - 0.5) * 100,
-                    Math.random() * 50 + 10,
-                    (Math.random() - 0.5) * 100
-                );
-                
-                shape.rotation.set(
-                    Math.random() * Math.PI,
-                    Math.random() * Math.PI,
-                    Math.random() * Math.PI
-                );
-                
-                shape.userData = {
-                    rotationSpeed: {
-                        x: (Math.random() - 0.5) * (isMobile ? 0.01 : 0.02),
-                        y: (Math.random() - 0.5) * (isMobile ? 0.01 : 0.02),
-                        z: (Math.random() - 0.5) * (isMobile ? 0.01 : 0.02)
-                    },
-                    floatSpeed: Math.random() * (isMobile ? 0.01 : 0.02) + 0.01
-                };
-                
-                shapes.push(shape);
-                bgScene.add(shape);
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = Math.random() > 0.5 ? 'rgba(124, 58, 237, 0.5)' : 'rgba(0, 212, 255, 0.5)';
             }
 
-            // Particle System (reduced for mobile)
-            const particleCount = isMobile ? 200 : 1000;
-            const particleGeometry = new THREE.BufferGeometry();
-            const particlePositions = new Float32Array(particleCount * 3);
-            const particleColors = new Float32Array(particleCount * 3);
-            const particleSizes = new Float32Array(particleCount);
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
 
+                if (!isMobile) {
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 150) {
+                        const force = (150 - distance) / 150;
+                        this.x -= (dx / distance) * force * 2;
+                        this.y -= (dy / distance) * force * 2;
+                    }
+                }
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particles = [];
+            const particleCount = isMobile ? 50 : 100;
             for (let i = 0; i < particleCount; i++) {
-                particlePositions[i * 3] = (Math.random() - 0.5) * 200;
-                particlePositions[i * 3 + 1] = Math.random() * 100;
-                particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 200;
-                
-                const color = new THREE.Color();
-                color.setHSL(Math.random() > 0.5 ? 0.55 : 0.15, 1, 0.7);
-                particleColors[i * 3] = color.r;
-                particleColors[i * 3 + 1] = color.g;
-                particleColors[i * 3 + 2] = color.b;
-                
-                particleSizes[i] = Math.random() * (isMobile ? 1 : 2) + 1;
+                particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
             }
+        }
 
-            particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-            particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
-            particleGeometry.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 0, 21, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const particleMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                    time: { value: 0 }
-                },
-                vertexShader: `
-                    attribute float size;
-                    attribute vec3 color;
-                    varying vec3 vColor;
-                    uniform float time;
-                    void main() {
-                        vColor = color;
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        gl_PointSize = size * (300.0 / -mvPosition.z) * (1.0 + sin(time + position.x * 0.01) * 0.3);
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    varying vec3 vColor;
-                    void main() {
-                        vec2 center = gl_PointCoord - 0.5;
-                        float dist = length(center);
-                        if (dist > 0.5) discard;
-                        float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
-                        gl_FragColor = vec4(vColor, alpha * ${isMobile ? '0.4' : '0.6'});
-                    }
-                `,
-                transparent: true,
-                vertexColors: true,
-                blending: THREE.AdditiveBlending
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
             });
 
-            particles = new THREE.Points(particleGeometry, particleMaterial);
-            bgScene.add(particles);
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
 
-            // DNA Helix Structure (simplified for mobile)
-            if (!isMobile) {
-                const helixGeometry = new THREE.BufferGeometry();
-                const helixPositions = [];
-                const helixColors = [];
-
-                for (let i = 0; i < 100; i++) {
-                    const t = i / 100 * Math.PI * 4;
-                    const radius = 15;
-                    
-                    // First strand
-                    helixPositions.push(
-                        Math.cos(t) * radius,
-                        i * 1 - 50,
-                        Math.sin(t) * radius
-                    );
-                    helixColors.push(0, 0.83, 1);
-                    
-                    // Second strand
-                    helixPositions.push(
-                        Math.cos(t + Math.PI) * radius,
-                        i * 1 - 50,
-                        Math.sin(t + Math.PI) * radius
-                    );
-                    helixColors.push(0, 1, 0.62);
-                }
-
-                helixGeometry.setAttribute('position', new THREE.Float32BufferAttribute(helixPositions, 3));
-                helixGeometry.setAttribute('color', new THREE.Float32BufferAttribute(helixColors, 3));
-
-                const helixMaterial = new THREE.PointsMaterial({
-                    size: 0.8,
-                    vertexColors: true,
-                    transparent: true,
-                    opacity: 0.6
-                });
-
-                helix = new THREE.Points(helixGeometry, helixMaterial);
-                helix.position.x = 30;
-                bgScene.add(helix);
-            }
-
-            // Camera position
-            bgCamera.position.set(0, 20, 40);
-            bgCamera.lookAt(0, 0, 0);
-        }
-
-        // Animation loop with mobile optimizations
-        let time = 0;
-        function animateBackground() {
-            requestAnimationFrame(animateBackground);
-            
-            if (isReducedMotion) return;
-            
-            time += isMobile ? 0.008 : 0.016;
-
-            // Update grid shader
-            if (grid && grid.material.uniforms) {
-                grid.material.uniforms.time.value = time;
-            }
-            if (particles && particles.material.uniforms) {
-                particles.material.uniforms.time.value = time;
-            }
-
-            // Animate floating shapes (reduced frequency for mobile)
-            if (time % (isMobile ? 4 : 2) < (isMobile ? 0.008 : 0.016)) {
-                shapes.forEach((shape, i) => {
-                    if (shape.userData) {
-                        shape.rotation.x += shape.userData.rotationSpeed.x;
-                        shape.rotation.y += shape.userData.rotationSpeed.y;
-                        shape.rotation.z += shape.userData.rotationSpeed.z;
-                        
-                        shape.position.y += Math.sin(time * shape.userData.floatSpeed + i) * (isMobile ? 0.05 : 0.1);
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(124, 58, 237, ${0.2 - distance / 500})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
                     }
                 });
-            }
-
-            // Animate particles (reduced for mobile)
-            if (particles && particles.geometry.attributes.position) {
-                const positions = particles.geometry.attributes.position.array;
-                const particleCount = isMobile ? 200 : 1000;
-                for (let i = 0; i < particleCount; i++) {
-                    positions[i * 3 + 1] += isMobile ? 0.05 : 0.1;
-                    if (positions[i * 3 + 1] > 100) {
-                        positions[i * 3 + 1] = 0;
-                    }
-                }
-                particles.geometry.attributes.position.needsUpdate = true;
-            }
-
-            // Rotate helix (desktop only)
-            if (helix && !isMobile) {
-                helix.rotation.y += 0.005;
-            }
-
-            // Camera movement (reduced for mobile)
-            if (!isMobile) {
-                bgCamera.position.x = Math.sin(time * 0.1) * 5;
-                bgCamera.position.z = 40 + Math.cos(time * 0.05) * 10;
-                bgCamera.lookAt(0, 0, 0);
-            }
-
-            bgRenderer.render(bgScene, bgCamera);
-        }
-
-        // Mobile menu functionality
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking on links
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                mobileMenu.classList.remove('active');
             });
-        });
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenuBtn.classList.remove('active');
-                mobileMenu.classList.remove('active');
-            }
-        });
-
-        // Theme toggle for both desktop and mobile
-        const themeToggle = document.getElementById('theme-toggle');
-        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            document.body.classList.toggle('light');
-            const isDark = document.body.classList.contains('dark');
-            const themeIcon = isDark ? '🌙' : '☀️';
-            
-            themeToggle.textContent = themeIcon;
-            mobileThemeToggle.textContent = `${themeIcon} Toggle Theme`;
-            
-            // Update shader colors based on theme
-            if (grid && grid.material.uniforms) {
-                if (document.body.classList.contains('light')) {
-                    grid.material.uniforms.color1.value.setHex(0x0066CC);
-                    grid.material.uniforms.color2.value.setHex(0x059669);
-                } else {
-                    grid.material.uniforms.color1.value.setHex(0x00D4FF);
-                    grid.material.uniforms.color2.value.setHex(0x00FF9F);
-                }
-            }
+            requestAnimationFrame(animate);
         }
 
-        themeToggle.addEventListener('click', toggleTheme);
-        mobileThemeToggle.addEventListener('click', toggleTheme);
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
 
-        // Popup handling with mobile optimizations
-        const offerSection = document.getElementById('offer-section');
-        const offerPopup = document.getElementById('offer-popup');
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 768;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        // Service animations
+        function createWebsiteAnimation() {
+            const container = document.getElementById('anim-website');
+            container.innerHTML = '<div style="width: 100%; height: 100%; display: flex; flex-direction: column; gap: 10px; padding: 20px; background: rgba(124, 58, 237, 0.1); border-radius: 10px;"><div style="width: 60%; height: 20px; background: linear-gradient(90deg, var(--bright-purple), var(--cyber-blue)); border-radius: 5px; animation: pulse 2s infinite;"></div><div style="width: 80%; height: 15px; background: rgba(124, 58, 237, 0.3); border-radius: 5px; animation: pulse 2s 0.2s infinite;"></div><div style="width: 70%; height: 15px; background: rgba(0, 212, 255, 0.3); border-radius: 5px; animation: pulse 2s 0.4s infinite;"></div></div>';
+        }
+
+        function createWebAppAnimation() {
+            const container = document.getElementById('anim-webapp');
+            container.innerHTML = '<div style="width: 100%; height: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px;"><div style="background: var(--bright-purple); border-radius: 5px; animation: bounce 1.5s infinite;"></div><div style="background: var(--cyber-blue); border-radius: 5px; animation: bounce 1.5s 0.2s infinite;"></div><div style="background: var(--neon-green); border-radius: 5px; animation: bounce 1.5s 0.4s infinite;"></div></div>';
+        }
+
+        function createWeb3Animation() {
+            const container = document.getElementById('anim-web3');
+            container.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;"><div style="width: 60px; height: 60px; border: 3px solid var(--bright-purple); border-radius: 50%; position: absolute; animation: rotate 3s linear infinite;"></div><div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--cyber-blue), var(--neon-green)); border-radius: 50%; animation: pulse 2s infinite;"></div></div>';
+        }
+
+        function createAutomationAnimation() {
+            const container = document.getElementById('anim-automation');
+            container.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-around; padding: 20px;"><div style="width: 30px; height: 30px; background: var(--bright-purple); border-radius: 5px; animation: slide 2s infinite;"></div><div style="width: 30px; height: 30px; background: var(--cyber-blue); border-radius: 5px; animation: slide 2s 0.5s infinite;"></div><div style="width: 30px; height: 30px; background: var(--neon-green); border-radius: 5px; animation: slide 2s 1s infinite;"></div></div>';
+        }
+
+        function createMobileAnimation() {
+            const container = document.getElementById('anim-mobile');
+            container.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"><div style="width: 80px; height: 130px; border: 3px solid var(--bright-purple); border-radius: 15px; position: relative; animation: shake 3s infinite;"><div style="width: 50%; height: 5px; background: var(--cyber-blue); border-radius: 5px; position: absolute; top: 50%; left: 25%; animation: pulse 1.5s infinite;"></div></div></div>';
+        }
+
+        function createBackendAnimation() {
+            const container = document.getElementById('anim-backend');
+            container.innerHTML = '<div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;"><div style="display: flex; gap: 10px;"><div style="width: 15px; height: 15px; background: var(--bright-purple); border-radius: 50%; animation: pulse 1s infinite;"></div><div style="width: 15px; height: 15px; background: var(--cyber-blue); border-radius: 50%; animation: pulse 1s 0.2s infinite;"></div><div style="width: 15px; height: 15px; background: var(--neon-green); border-radius: 50%; animation: pulse 1s 0.4s infinite;"></div></div><div style="width: 100px; height: 3px; background: linear-gradient(90deg, var(--bright-purple), var(--cyber-blue)); border-radius: 5px;"></div></div>';
+        }
+
+        // Popup handling
         const serviceCards = document.querySelectorAll('.service-card');
         const popups = document.querySelectorAll('.popup');
-        const closePopups = document.querySelectorAll('.close-popup');
+        const closeButtons = document.querySelectorAll('.close-popup');
 
-        offerSection.addEventListener('click', (e) => {
-            e.preventDefault();
-            offerPopup.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        document.getElementById('offer-card').addEventListener('click', () => {
+            document.getElementById('offer-popup').style.display = 'block';
         });
 
         serviceCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
+            card.addEventListener('click', () => {
                 const popupId = card.dataset.popup;
-                const popup = document.getElementById(popupId);
-                if (popup) {
-                    popup.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
-                }
+                document.getElementById(popupId).style.display = 'block';
             });
         });
 
-        closePopups.forEach(close => {
-            close.addEventListener('click', () => {
-                popups.forEach(popup => {
-                    popup.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                });
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                popups.forEach(popup => popup.style.display = 'none');
             });
         });
 
-        // Close popups on background click
         popups.forEach(popup => {
             popup.addEventListener('click', (e) => {
                 if (e.target === popup) {
                     popup.style.display = 'none';
-                    document.body.style.overflow = 'auto';
                 }
             });
         });
 
-        // Smooth scroll for navigation with mobile optimization
+        // Mobile menu
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+                if (navLinks.style.display === 'flex') {
+                    navLinks.style.position = 'absolute';
+                    navLinks.style.top = '70px';
+                    navLinks.style.left = '0';
+                    navLinks.style.right = '0';
+                    navLinks.style.background = 'rgba(10, 0, 21, 0.95)';
+                    navLinks.style.flexDirection = 'column';
+                    navLinks.style.padding = '2rem';
+                }
+            });
+        }
+
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    // Close mobile menu if open
-                    mobileMenuBtn.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                    
-                    // Account for fixed nav height
-                    const navHeight = document.querySelector('nav').offsetHeight;
-                    const targetPosition = target.offsetTop - navHeight;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    if (window.innerWidth <= 768) {
+                        navLinks.style.display = 'none';
+                    }
                 }
             });
         });
 
-        // Resize handler with mobile detection
-        function handleResize() {
-            const wasMobile = isMobile;
-            isMobile = window.innerWidth <= 768;
-            
-            if (bgCamera && bgRenderer) {
-                bgCamera.aspect = window.innerWidth / window.innerHeight;
-                bgCamera.updateProjectionMatrix();
-                bgRenderer.setSize(window.innerWidth, window.innerHeight);
-                bgRenderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+        // CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { opacity: 0.5; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.05); }
             }
-            
-            // Reinitialize if mobile state changed
-            if (wasModal !== isMobile && bgScene) {
-                // Clear existing scene
-                while(bgScene.children.length > 0) {
-                    bgScene.remove(bgScene.children[0]);
-                }
-                shapes = [];
-                initBackground();
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-20px); }
             }
-        }
-
-        window.addEventListener('resize', handleResize);
-
-        // Touch event optimization for mobile
-        if (isMobile) {
-            document.addEventListener('touchstart', function() {}, {passive: true});
-            document.addEventListener('touchmove', function() {}, {passive: true});
-        }
-
-        // Loading screen with mobile optimization
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loading').classList.add('hidden');
-                initBackground();
-                animateBackground();
-            }, isMobile ? 500 : 1000);
-        });
-
-        // Intersection Observer for animations (mobile optimized)
-        const observerOptions = {
-            threshold: isMobile ? 0.05 : 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe service cards for animation
-        document.querySelectorAll('.service-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = `translateY(${isMobile ? '30px' : '50px'})`;
-            card.style.transition = `opacity ${isMobile ? '0.6s' : '0.8s'} ease, transform ${isMobile ? '0.6s' : '0.8s'} ease`;
-            observer.observe(card);
-        });
-
-        // Parallax effect (disabled on mobile for performance)
-        if (!isMobile) {
-            window.addEventListener('scroll', () => {
-                const scrolled = window.pageYOffset;
-                const parallaxElements = document.querySelectorAll('.parallax');
-                
-                parallaxElements.forEach(element => {
-                    const speed = element.dataset.speed || 0.5;
-                    element.style.transform = `translateY(${scrolled * speed}px)`;
-                });
-            });
-        }
-
-        // Prevent zoom on double tap (iOS)
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
+            @keyframes rotate {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
-            lastTouchEnd = now;
-        }, false);
+            @keyframes slide {
+                0%, 100% { transform: translateX(-50px); opacity: 0; }
+                50% { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes shake {
+                0%, 100% { transform: rotate(0deg); }
+                25% { transform: rotate(-5deg); }
+                75% { transform: rotate(5deg); }
+            }
+        `;
+        document.head.appendChild(style);
 
-        // Orientation change handling
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                handleResize();
-            }, 100);
-        });
+        // Initialize
+        init();
+        animate();
+        createWebsiteAnimation();
+        createWebAppAnimation();
+        createWeb3Animation();
+        createAutomationAnimation();
+        createMobileAnimation();
+        createBackendAnimation();
     </script>
 </body>
-</html>
+</html><a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="website-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Website Development</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Professional responsive websites built with cutting-edge technologies. Perfect for businesses, portfolios, and startups looking to establish their digital presence.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
+                    <a href="https://x.com/0xhe8st" class="cta-button" style="flex: 1; justify-content: center;">X (Twitter)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="webapp-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">✕</span>
+            <div style="padding: 3rem;">
+                <h3 style="font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--bright-purple);">Web Application Research</h3>
+                <p style="margin-bottom: 2rem; line-height: 1.8; color: var(--text-secondary);">Advanced full-stack web applications with modern frameworks like React, Vue, and Node.js. Scalable architecture designed for growth and performance.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://t.me/HE8ST" class="cta-button" style="flex: 1; justify-content: center;">Telegram</a>
